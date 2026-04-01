@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Laziness Lie — ND Affinity Group</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --text:       #1C1917;
+            --text-2:     #57534E;
+            --text-3:     #A8A29E;
+            --accent:     #5A6FA8;
+            --accent-bg:  #EEF1FA;
+            --cool:       #4A7A6A;
+            --cool-bg:    #EDF4F1;
+            --border:     #E7E5E4;
+            --bg:         #FAFAF7;
+            --surface:    #FFFFFF;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 4rem;
+        }
+
+        /* ---- Header ---- */
+        .header { margin-bottom: 2.5rem; }
+        .header-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            font-size: 1.05rem;
+            color: var(--text-2);
+            font-weight: 400;
+        }
+
+        /* ---- Navigation ---- */
+        .nav {
+            display: flex;
+            gap: 0.25rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .nav button {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 0.75rem 1rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-3);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .nav button:hover { color: var(--text-2); }
+        .nav button.active {
+            color: var(--accent);
+            font-weight: 600;
+            border-bottom-color: var(--accent);
+        }
+
+        /* ---- Pages ---- */
+        .page { display: none; }
+        .page.active { display: block; animation: appear 0.25s ease; }
+        @keyframes appear { from { opacity: 0; } to { opacity: 1; } }
+
+        /* ---- Typography ---- */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-3);
+            margin-bottom: 0.5rem;
+        }
+        .section-label.warm { color: var(--accent); }
+        .section-label.cool { color: var(--cool); }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.01em;
+            margin-bottom: 0.75rem;
+        }
+        h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+        .body-text {
+            font-size: 0.95rem;
+            color: var(--text-2);
+            line-height: 1.8;
+        }
+        .body-text + .body-text { margin-top: 0.75rem; }
+        .body-text strong { color: var(--text); font-weight: 600; }
+
+        /* ---- Timing ---- */
+        .timing {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-3);
+            float: right;
+            margin-top: 0.2rem;
+        }
+
+        /* ---- Dividers ---- */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2.5rem 0;
+        }
+
+        /* ---- Callout ---- */
+        .callout {
+            border-left: 3px solid var(--border);
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+        }
+        .callout.warm { border-left-color: var(--accent); background: var(--accent-bg); }
+        .callout.cool { border-left-color: var(--cool); background: var(--cool-bg); }
+        .callout .callout-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-3);
+            margin-bottom: 0.4rem;
+        }
+        .callout.warm .callout-label { color: var(--accent); }
+        .callout.cool .callout-label { color: var(--cool); }
+        .callout p {
+            font-size: 0.9rem;
+            color: var(--text-2);
+            line-height: 1.7;
+        }
+
+        /* ---- Numbered Steps ---- */
+        .steps { margin: 1.5rem 0; }
+        .step {
+            display: flex;
+            gap: 1rem;
+            align-items: baseline;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .step:last-child { border-bottom: none; }
+        .step-num {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-3);
+            flex-shrink: 0;
+            width: 1.5rem;
+            text-align: right;
+        }
+        .step-content { flex: 1; }
+        .step-q {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .step-hint {
+            font-size: 0.82rem;
+            color: var(--text-3);
+            margin-top: 0.15rem;
+            line-height: 1.6;
+        }
+
+        /* ---- Chain (interactive horizontal steps) ---- */
+        .chain {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: 1.5rem 0 0;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .chain-step {
+            flex: 1;
+            padding: 1rem 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            border-right: 1px solid var(--border);
+            background: var(--surface);
+            transition: background 0.15s;
+        }
+        .chain-step:last-child { border-right: none; }
+        .chain-step:hover { background: var(--bg); }
+        .chain-step.active { background: var(--accent-bg); }
+        .chain-num {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-3);
+        }
+        .chain-step.active .chain-num { color: var(--accent); }
+        .chain-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 0.15rem;
+        }
+        .chain-detail {
+            display: none;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background: var(--surface);
+            margin-top: -1px;
+            margin-bottom: 1.5rem;
+        }
+        .chain-detail.active { display: block; }
+        .chain-detail p { font-size: 0.9rem; color: var(--text-2); line-height: 1.75; }
+        .chain-detail p + p { margin-top: 0.75rem; }
+        .chain-example {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-3);
+            font-style: italic;
+            padding-left: 1rem;
+            border-left: 2px solid var(--border);
+        }
+
+        /* ---- Accordion ---- */
+        .accordion { margin: 1.5rem 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .acc-item { border-bottom: 1px solid var(--border); }
+        .acc-item:last-child { border-bottom: none; }
+        .acc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            background: var(--surface);
+            transition: background 0.15s;
+            user-select: none;
+        }
+        .acc-header:hover { background: var(--bg); }
+        .acc-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+        .acc-icon {
+            font-size: 1.1rem;
+            color: var(--text-3);
+            transition: transform 0.2s;
+            font-weight: 300;
+            line-height: 1;
+        }
+        .acc-item.open .acc-icon { transform: rotate(45deg); }
+        .acc-body {
+            display: none;
+            padding: 0 1.25rem 1.25rem;
+            background: var(--surface);
+        }
+        .acc-item.open .acc-body { display: block; }
+        .acc-body p { font-size: 0.9rem; color: var(--text-2); line-height: 1.75; }
+        .acc-body p + p { margin-top: 0.75rem; }
+        .acc-body ul { list-style: none; margin-top: 0.5rem; }
+        .acc-body ul li {
+            font-size: 0.9rem;
+            color: var(--text-2);
+            line-height: 1.75;
+            padding-left: 1rem;
+            position: relative;
+        }
+        .acc-body ul li::before { content: '·'; position: absolute; left: 0; color: var(--text-3); }
+        .acc-body .aside {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--text-3);
+            padding-left: 1rem;
+            border-left: 2px solid var(--border);
+        }
+
+        /* ---- Two-column comparison ---- */
+        .compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem 0 0.75rem;
+        }
+        .compare-col {
+            padding: 1.25rem;
+        }
+        .compare-col + .compare-col { border-left: 1px solid var(--border); }
+        .compare-col.left { background: var(--accent-bg); }
+        .compare-col.right { background: var(--cool-bg); }
+        .compare-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .compare-col.left .compare-label { color: var(--accent); }
+        .compare-col.right .compare-label { color: var(--cool); }
+        .compare-col ul { list-style: none; }
+        .compare-col ul li {
+            font-size: 0.88rem;
+            color: var(--text-2);
+            line-height: 1.7;
+            padding-left: 1rem;
+            position: relative;
+            margin-bottom: 0.25rem;
+        }
+        .compare-col ul li::before { content: '·'; position: absolute; left: 0; color: var(--text-3); }
+
+        /* ---- Discussion Questions ---- */
+        .questions { margin: 1.5rem 0; }
+        .question { padding: 1rem 0; border-bottom: 1px solid var(--border); }
+        .question:last-child { border-bottom: none; }
+        .question-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-3);
+            margin-bottom: 0.3rem;
+        }
+        .question-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .question-note {
+            font-size: 0.82rem;
+            font-style: italic;
+            color: var(--text-3);
+            margin-top: 0.3rem;
+        }
+
+        /* ---- Page nav ---- */
+        .page-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        .page-nav button {
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 0.5rem 0;
+            transition: opacity 0.15s;
+        }
+        .page-nav button:hover { opacity: 0.7; }
+        .page-nav .ghost { visibility: hidden; }
+
+        /* ---- Footer ---- */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-3);
+            line-height: 1.8;
+        }
+        .footer strong { color: var(--text-2); font-weight: 600; }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 600px) {
+            .container { padding: 2rem 1.25rem 3rem; }
+            h1 { font-size: 1.8rem; }
+            .chain { flex-direction: column; }
+            .chain-step { border-right: none; border-bottom: 1px solid var(--border); }
+            .chain-step:last-child { border-bottom: none; }
+            .chain-detail { border-radius: 0 0 8px 8px; }
+            .compare { grid-template-columns: 1fr; }
+            .compare-col + .compare-col { border-left: none; border-top: 1px solid var(--border); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header class="header">
+        <div class="header-label">ND Affinity Group — Single Session</div>
+        <h1>The Laziness Lie</h1>
+        <p class="subtitle">Why "just try harder" isn't the problem — and what actually is</p>
+    </header>
+
+    <nav class="nav">
+        <button class="active" onclick="showPage(0, this)">Welcome</button>
+        <button onclick="showPage(1, this)">The Lie</button>
+        <button onclick="showPage(2, this)">Executive Function</button>
+        <button onclick="showPage(3, this)">Discussion</button>
+        <button onclick="showPage(4, this)">Closing</button>
+    </nav>
+
+
+    <!-- ======================== WELCOME ======================== -->
+    <div class="page active">
+
+        <div class="section-label warm">Welcome</div>
+        <h2><span class="timing">8 to 10 min</span>About today's group</h2>
+        <p class="body-text">
+            Today is about one of the most damaging things neurodivergent people are told:
+            that the reason things are hard is because they aren't trying hard enough.
+        </p>
+        <p class="body-text">
+            We're going to look at where that story comes from, what it actually costs,
+            and what a more honest explanation looks like. Not to make excuses. To get clearer.
+        </p>
+
+        <div class="callout warm" style="margin-top: 1.5rem;">
+            <div class="callout-label">Confidentiality</div>
+            <p>
+                What's shared in this group stays here. Names, stories, details — all protected.
+                The only exception is safety. Outside of that, this is a space to be honest.
+            </p>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Check-in</div>
+        <h2><span class="timing">8 to 10 min</span>Getting into it</h2>
+        <p class="body-text">Share your name, then answer each of these. A sentence or two is fine.</p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-q">What's one thing in your life right now that feels harder than it should?</div>
+                    <div class="step-hint">Not a complaint — just an honest observation. Something that costs more energy than you think it should.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-q">When you struggle with something, what's the first story your brain tells you about why?</div>
+                    <div class="step-hint">Lazy, broken, not trying hard enough, something wrong with you. Notice what the automatic story is.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-q">What would it mean if that story wasn't true?</div>
+                    <div class="step-hint">No need to fully believe it yet. Just notice what would open up.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-nav">
+            <button class="ghost">← Back</button>
+            <button onclick="showPage(1)">The Lie →</button>
+        </div>
+    </div>
+
+
+    <!-- ======================== THE LIE ======================== -->
+    <div class="page">
+
+        <div class="section-label warm">The Laziness Lie</div>
+        <h2><span class="timing">15 to 20 min</span>Where the story comes from</h2>
+        <p class="body-text">
+            Dr. Devon Price's book <em>Laziness Does Not Exist</em> names a specific cultural myth —
+            one that's especially destructive for neurodivergent people.
+            It has three tenets.
+        </p>
+
+        <div class="chain">
+            <div class="chain-step active" onclick="chainStep(0, this)">
+                <div class="chain-num">01</div>
+                <div class="chain-name">Worth = Output</div>
+            </div>
+            <div class="chain-step" onclick="chainStep(1, this)">
+                <div class="chain-num">02</div>
+                <div class="chain-name">Never Enough</div>
+            </div>
+            <div class="chain-step" onclick="chainStep(2, this)">
+                <div class="chain-num">03</div>
+                <div class="chain-name">Don't Trust Yourself</div>
+            </div>
+        </div>
+
+        <div class="chain-detail active" id="cd0">
+            <p><strong>Your worth is your productivity.</strong> The laziness lie starts here. What you produce, accomplish, and achieve is what makes you valuable — as an employee, a family member, a person. This is so embedded in American culture it often doesn't feel like a belief. It just feels like reality.</p>
+            <p>For neurodivergent people, whose output often doesn't look like neurotypical output, this tenet does particular damage. Variable productivity, non-linear work styles, or needing more time get read as moral failures.</p>
+        </div>
+        <div class="chain-detail" id="cd1">
+            <p><strong>There is always more you could be doing.</strong> Rest, downtime, doing nothing — these are not legitimate. Any time you're not producing, you're falling behind. Relaxing becomes a thing you have to earn. Being "busy" becomes an identity.</p>
+            <p>Research shows the average worker can genuinely focus for about three to four hours per day. The rest is relationship-building, reorganizing, and recovery. But the laziness myth demands eight hours of sustained output and calls anything less a character flaw.</p>
+            <div class="chain-example">If you're resting, you're wasting time. If you're tired, you should push through. If you need a break, you're weak.</div>
+        </div>
+        <div class="chain-detail" id="cd2">
+            <p><strong>You cannot trust your own needs and limitations.</strong> Feelings of exhaustion, overwhelm, or inability to start are not real data — they're excuses. Your body and nervous system are wrong. Push harder. This is the most insidious tenet because it severs the most important feedback loop you have.</p>
+            <p>For neurodivergent people with sensory differences, dysregulated nervous systems, or bodies that communicate differently, being taught to distrust internal signals creates serious long-term harm.</p>
+            <div class="chain-example">"You're not really tired." "Other people manage fine." "You're making excuses." "You just don't want to."</div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Price's core argument</div>
+        <h2>The barrier question</h2>
+        <p class="body-text">
+            If a person cares about getting something done yet repeatedly fails to do it,
+            there are clearly barriers in their way.
+            What they need is support removing those barriers — not shame about character flaws.
+        </p>
+
+        <div class="callout warm">
+            <p>
+                Price's rule: <strong>if someone can't do something, assume there's a reason.</strong>
+                Not a moral reason. A real one. Exhaustion, overwhelm, unclear steps,
+                anxiety, sensory load, or an environment that was never designed for how their brain works.
+            </p>
+        </div>
+
+        <p class="body-text" style="margin-top: 1.5rem;">
+            This isn't a soft reframe. It's a different explanatory model entirely.
+            Situational constraints predict behavior far better than personality or willpower —
+            but the laziness myth keeps the focus on the person rather than the context.
+        </p>
+
+        <hr class="divider">
+
+        <div class="section-label">The shame loop</div>
+        <h2>How difference becomes dysfunction</h2>
+        <p class="body-text">
+            Neurodivergent people don't start with dysfunction. They start with difference.
+            But the shame about that difference creates dysfunction — which produces more shame,
+            which creates more dysfunction. Then they get blamed for the very thing the shame created.
+        </p>
+
+        <div class="compare">
+            <div class="compare-col left">
+                <div class="compare-label">What's labeled</div>
+                <ul>
+                    <li>Lazy</li>
+                    <li>Unmotivated</li>
+                    <li>Not trying</li>
+                    <li>Making excuses</li>
+                    <li>Irresponsible</li>
+                    <li>Difficult</li>
+                </ul>
+            </div>
+            <div class="compare-col right">
+                <div class="compare-label">What's actually happening</div>
+                <ul>
+                    <li>Executive dysfunction</li>
+                    <li>Dopamine deficit, task paralysis</li>
+                    <li>Barriers that aren't visible</li>
+                    <li>Real limitations being named</li>
+                    <li>Nervous system dysregulation</li>
+                    <li>Sensory overload or burnout</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="callout" style="margin-top: 0.5rem;">
+            <p>KC Davis: as a therapist, she's never gotten to the bottom of why someone struggles with something and found it was simply because they were lazy. There is almost always a legitimate barrier — pain, fatigue, executive dysfunction, overwhelm, burnout, lack of support, or mental health.</p>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(0)">← Welcome</button>
+            <button onclick="showPage(2)">Executive Function →</button>
+        </div>
+    </div>
+
+
+    <!-- ======================== EXECUTIVE FUNCTION ======================== -->
+    <div class="page">
+
+        <div class="section-label cool">Executive Function</div>
+        <h2><span class="timing">15 to 20 min</span>What's actually going on in your brain</h2>
+        <p class="body-text">
+            Executive dysfunction — your brain not doing what you tell it to do — is one of the
+            most misunderstood aspects of neurodivergent experience. It's not a willpower failure.
+            It's a neurological one.
+        </p>
+
+        <div class="accordion">
+            <div class="acc-item open">
+                <div class="acc-header" onclick="toggleAcc(this)">
+                    <div class="acc-title">What executive function actually is</div>
+                    <div class="acc-icon">+</div>
+                </div>
+                <div class="acc-body">
+                    <p>Executive function covers the mental processes that help you plan, initiate, sequence, and complete tasks. This includes starting things, switching between things, regulating attention, managing time, and tolerating the discomfort of boring or hard work.</p>
+                    <p>Price notes that the very concept is culturally loaded: executive functioning essentially demands that each one of us be a high-powered corporate executive managing the business that is our own lives — setting agendas, tracking schedules, sequencing all steps toward goals while maintaining home, family, and self.</p>
+                    <div class="aside">For brains wired differently, this framework was never a good fit. The demand is neurotypical by design.</div>
+                </div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-header" onclick="toggleAcc(this)">
+                    <div class="acc-title">Dopamine and the motivation system</div>
+                    <div class="acc-icon">+</div>
+                </div>
+                <div class="acc-body">
+                    <p>Executive dysfunction has a lot to do with dopamine — the brain's incentive chemical. For many neurodivergent brains, especially ADHD, dopamine doesn't release on cues that work for neurotypical brains. Tasks aren't automatically "tagged" as worth starting.</p>
+                    <p>This isn't a choice. You can't willpower your way to dopamine. The brain that "just can't start" isn't being defiant — it literally doesn't have the neurochemical signal that says <em>this matters, go now.</em></p>
+                    <div class="aside">Interest, urgency, challenge, and novelty tend to create dopamine spikes. Routine, obligation, and abstract future reward often don't — which explains a lot about why certain tasks stay undone.</div>
+                </div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-header" onclick="toggleAcc(this)">
+                    <div class="acc-title">Procrastination reframed</div>
+                    <div class="acc-icon">+</div>
+                </div>
+                <div class="acc-body">
+                    <p>Price makes an important point about procrastination: it's more likely when a task is meaningful and the person cares about doing it well. When someone fails to begin, it's typically because of anxiety about not being good enough, or genuine confusion about what the first steps are.</p>
+                    <p>Procrastination is not a character trait. It's a response to a specific set of conditions — usually some combination of unclear initiation point, fear of imperfection, overwhelm, or a mismatch between the task's demands and how the brain processes them.</p>
+                    <div class="aside">If you care deeply about something and still can't start — that's not laziness. That's often the highest form of it.</div>
+                </div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-header" onclick="toggleAcc(this)">
+                    <div class="acc-title">Body doubling and external structure</div>
+                    <div class="acc-icon">+</div>
+                </div>
+                <div class="acc-body">
+                    <p>Body doubling — having another person present while you work — is one of the most effective tools for neurodivergent executive dysfunction. Price notes that while clinicians prescribe stimulant medication, no one has systematically studied prescribing a body double, despite it often addressing the underlying problem more directly.</p>
+                    <p>ADHD and autism are often diagnosed as individual deficits. But many symptoms are situational. People with ADHD are highly socially motivated — in social contexts, they often function significantly better. It's worth asking why we pathologize the need for others at all, when nearly every human being is a social animal.</p>
+                    <div class="aside">External scaffolding — another person, a timer, a change of environment, a structured routine — isn't a crutch. It's an accommodation. The same way glasses aren't a crutch for eyes.</div>
+                </div>
+            </div>
+            <div class="acc-item">
+                <div class="acc-header" onclick="toggleAcc(this)">
+                    <div class="acc-title">Rest as necessity, not reward</div>
+                    <div class="acc-icon">+</div>
+                </div>
+                <div class="acc-body">
+                    <p>The laziness lie treats rest as something you earn. Price argues the opposite: rest is biological necessity. Not just from physical labor, but from sustained cognitive load, sensory input, and social performance.</p>
+                    <p>For neurodivergent people who are masking, code-switching, or navigating environments not designed for them, the rest needed to recover is significantly higher than what the laziness myth allows. Needing more recovery time isn't weakness. It's an accurate reading of a higher metabolic cost.</p>
+                    <div class="aside">Quiet downtime — the kind where you're not consuming or producing anything — is where the nervous system restores itself. It is not wasted time.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(1)">← The Lie</button>
+            <button onclick="showPage(3)">Discussion →</button>
+        </div>
+    </div>
+
+
+    <!-- ======================== DISCUSSION ======================== -->
+    <div class="page">
+
+        <div class="section-label warm">Discussion</div>
+        <h2><span class="timing">20 to 25 min</span>Open it up</h2>
+        <p class="body-text">
+            These are starting points. Take them wherever feels real.
+            There are no wrong answers here.
+        </p>
+
+        <div class="questions">
+            <div class="question">
+                <div class="question-label">Opening</div>
+                <div class="question-text">Which of the three tenets — worth equals output, never enough, don't trust yourself — has done the most damage for you personally?</div>
+            </div>
+            <div class="question">
+                <div class="question-label">The barrier question</div>
+                <div class="question-text">Think of something you've been calling laziness or failure in yourself. What would a barrier-focused explanation look like instead of a character-focused one?</div>
+                <div class="question-note">Give people time here. This one can be hard to land.</div>
+            </div>
+            <div class="question">
+                <div class="question-label">Executive function</div>
+                <div class="question-text">When does executive dysfunction show up most for you? What conditions make it better or worse — and which of those conditions are you actually in control of?</div>
+            </div>
+            <div class="question">
+                <div class="question-label">The shame loop</div>
+                <div class="question-text">What's the story you tell yourself when you can't do something you think you should be able to do? Where did that story come from?</div>
+            </div>
+            <div class="question">
+                <div class="question-label">Closing round</div>
+                <div class="question-text">What's one accommodation, structure, or condition that genuinely helps you function better — that you've been reluctant to use or ask for because it felt like cheating?</div>
+            </div>
+        </div>
+
+        <div class="callout">
+            <p>Let the conversation find its own pace. Some questions will land harder than others. That's the work.</p>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(2)">← Executive Function</button>
+            <button onclick="showPage(4)">Closing →</button>
+        </div>
+    </div>
+
+
+    <!-- ======================== CLOSING ======================== -->
+    <div class="page">
+
+        <div class="section-label">Closing</div>
+        <h2><span class="timing">5 to 7 min</span>One last round</h2>
+        <p class="body-text">Answer each of these before you go.</p>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <div class="step-q">What's one story about yourself today's group put pressure on?</div>
+                    <div class="step-hint">Something you've believed about why you struggle. Did it hold up?</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <div class="step-q">What's one barrier you're going to name this week instead of blaming yourself for?</div>
+                    <div class="step-hint">Something specific. Not a vague intention — an actual situation.</div>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <div class="step-q">What would it look like to be easier on yourself about this — not as a philosophy, but as one concrete thing?</div>
+                    <div class="step-hint">A thought you stop having. A word you stop using. A standard you let go of.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="callout warm" style="margin-top: 2rem;">
+            <div class="callout-label">Facilitator note</div>
+            <p>
+                The goal today wasn't to give people an excuse not to try.
+                It was to replace a false explanation with a true one.
+                When people understand what's actually happening, they can actually address it.
+                Shame just keeps the loop running.
+            </p>
+        </div>
+
+        <div class="page-nav">
+            <button onclick="showPage(3)">← Discussion</button>
+            <button onclick="showPage(0)">Start over</button>
+        </div>
+    </div>
+
+
+    <div class="footer">
+        <strong>Crisis support</strong><br>
+        988 Suicide & Crisis Lifeline: call or text 988<br>
+        Crisis Text Line: text HOME to 741741
+    </div>
+
+</div>
+
+<script>
+    function showPage(i, btn) {
+        document.querySelectorAll('.page').forEach((p, j) => p.classList.toggle('active', j === i));
+        document.querySelectorAll('.nav button').forEach((b, j) => b.classList.toggle('active', j === i));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function chainStep(i, el) {
+        document.querySelectorAll('.chain-step').forEach(s => s.classList.remove('active'));
+        el.classList.add('active');
+        for (let j = 0; j < 3; j++) document.getElementById('cd' + j).classList.toggle('active', j === i);
+    }
+
+    function toggleAcc(header) {
+        header.closest('.acc-item').classList.toggle('open');
+    }
+</script>
+</body>
+</html>
